@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - includeAll:
+      relativeToChangelogFile: true
+      path: migrations/
+      errorIfMissingOrEmpty: false
+  - includeAll:
+      context: test
+      errorIfMissingOrEmpty: false
+      relativeToChangelogFile: true
+      path: fixtures/

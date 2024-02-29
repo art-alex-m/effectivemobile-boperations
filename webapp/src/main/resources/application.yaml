@@ -1,0 +1,25 @@
+server:
+  port: 6060
+  servlet:
+    context-path: /boperations-webapp
+spring:
+  liquibase:
+    liquibase-schema: public
+    default-schema: boperations
+  profiles:
+    active: security-enabled
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:15444/boperations?currentSchema=boperations
+    username: boperations
+    password: pwd123456!
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 2
+springdoc:
+  default-produces-media-type: application/json
+  api-docs:
+    version: openapi_3_1
+  swagger-ui:
+    path: /index.html
