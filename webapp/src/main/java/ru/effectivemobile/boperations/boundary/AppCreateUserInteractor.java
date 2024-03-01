@@ -22,6 +22,8 @@ import ru.effectivemobile.boperations.repository.AppProfileJpaRepository;
 import ru.effectivemobile.boperations.repository.AppProfilePhoneJpaRepository;
 import ru.effectivemobile.boperations.repository.AppUserJpaRepository;
 
+import java.math.BigDecimal;
+
 @Component
 @AllArgsConstructor
 @Builder
@@ -57,7 +59,7 @@ public class AppCreateUserInteractor implements CreateUserInteractor {
         AppAccount account = new AppAccount(user);
         bankAccountDbRepository.save(account);
 
-        AppAccountOperation operation = new AppAccountOperation(account, request.getStartBalance(),
+        AppAccountOperation operation = new AppAccountOperation(account, BigDecimal.valueOf(request.getStartBalance()),
                 AccountOperationType.TOPUP);
         operationDbRepository.save(operation);
 

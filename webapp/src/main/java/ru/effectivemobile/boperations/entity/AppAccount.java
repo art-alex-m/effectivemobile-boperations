@@ -41,6 +41,9 @@ public class AppAccount implements Account {
     @OneToOne(mappedBy = "account")
     private AppAccountBalance accountBalance;
 
+    @OneToOne(mappedBy = "account")
+    private AppAccountFirstTopup firstTopup;
+
     public AppAccount(DomainUser user) {
         this.user = new EmbeddedUser(user.getId());
     }

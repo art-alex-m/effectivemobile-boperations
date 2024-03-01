@@ -20,6 +20,7 @@ import ru.effectivemobile.boperations.domain.core.model.AccountOperationType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -51,14 +52,14 @@ public class AppAccountOperation implements AccountOperation {
     @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private AppAccount account;
 
-    public AppAccountOperation(AppAccount account, double amount, AccountOperationType type) {
+    public AppAccountOperation(AppAccount account, BigDecimal amount, AccountOperationType type) {
         this(UUID.randomUUID(), account, amount, type);
     }
 
-    public AppAccountOperation(UUID operationId, AppAccount account, double amount, AccountOperationType type) {
+    public AppAccountOperation(UUID operationId, AppAccount account, BigDecimal amount, AccountOperationType type) {
         this.primaryKey = new Pk(operationId, account.getId());
         this.account = account;
-        this.amount = BigDecimal.valueOf(amount);
+        this.amount = amount;
         this.type = type;
     }
 
@@ -77,5 +78,18 @@ public class AppAccountOperation implements AccountOperation {
 
         @Column(name = "account_id")
         private UUID accountId;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Pk pk)) return false;
+            return Objects.equals(getOperationId(), pk.getOperationId()) && Objects.equals(getAccountId(),
+                    pk.getAccountId());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getOperationId(), getAccountId());
+        }
     }
 }
