@@ -11,10 +11,11 @@ spring:
   main:
     banner-mode: off
   datasource:
-    url: jdbc:postgresql://localhost:15444/boperations?currentSchema=boperations
+    url: jdbc:postgresql://localhost:15444/boperations
     username: boperations
     password: pwd123456!
     hikari:
+      schema: boperations
       maximum-pool-size: 8
       minimum-idle: 2
   jpa:

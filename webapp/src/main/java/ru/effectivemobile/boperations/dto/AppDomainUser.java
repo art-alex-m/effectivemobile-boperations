@@ -1,4 +1,4 @@
-package ru.effectivemobile.boperations.model;
+package ru.effectivemobile.boperations.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

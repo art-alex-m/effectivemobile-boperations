@@ -1,5 +1,6 @@
 package ru.effectivemobile.boperations.domain.core.model;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -11,5 +12,5 @@ public interface Account extends DomainUserable {
 
     Instant getCreatedAt();
 
-    double getBalance();
+    BigDecimal getBalance();
 }
