@@ -2,7 +2,6 @@ package ru.effectivemobile.boperations.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -24,17 +23,16 @@ public class AppAccountBalance {
     @Id
     private UUID accountId;
 
-    @Column(name = "amount_topup")
+    @Column(name = "amount_topup", insertable = false, updatable = false)
     private BigDecimal amountTopup = BigDecimal.ZERO;
 
-    @Column(name = "amount_withdraw")
+    @Column(name = "amount_withdraw", insertable = false, updatable = false)
     private BigDecimal amountWithdraw = BigDecimal.ZERO;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(name = "balance", insertable = false, updatable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
+
+    @OneToOne
     @PrimaryKeyJoinColumn
     private AppAccount account;
-
-    public BigDecimal getBalance() {
-        return amountTopup.subtract(amountWithdraw);
-    }
 }

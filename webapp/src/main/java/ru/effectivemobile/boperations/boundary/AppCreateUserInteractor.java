@@ -9,7 +9,6 @@ import ru.effectivemobile.boperations.boundary.response.AppCreateUserResponse;
 import ru.effectivemobile.boperations.domain.core.boundary.CreateUserInteractor;
 import ru.effectivemobile.boperations.domain.core.boundary.request.CreateUserRequest;
 import ru.effectivemobile.boperations.domain.core.boundary.response.CreateUserResponse;
-import ru.effectivemobile.boperations.domain.core.exception.BoperationsDomainException;
 import ru.effectivemobile.boperations.domain.core.model.AccountOperationType;
 import ru.effectivemobile.boperations.dto.AppDomainUser;
 import ru.effectivemobile.boperations.entity.AppAccount;
@@ -45,17 +44,6 @@ public class AppCreateUserInteractor implements CreateUserInteractor {
     @Transactional
     @Override
     public CreateUserResponse create(CreateUserRequest request) {
-
-        if (userDbRepository.existsByUsername(request.getUsername())) {
-            throw new BoperationsDomainException("User already exists");
-        }
-        if (phoneJpaRepository.existsByValue(request.getPhone())) {
-            throw new BoperationsDomainException("Phone already taken");
-        }
-        if (emailJpaRepository.existsByValue(request.getPhone())) {
-            throw new BoperationsDomainException("Email already taken");
-        }
-
         AppUser user = new AppUser(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         userDbRepository.save(user);
 

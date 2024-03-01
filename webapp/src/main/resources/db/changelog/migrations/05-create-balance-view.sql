@@ -1,10 +1,12 @@
 -- liquibase formatted sql
 -- changeset artalexm:create-account-balance-view
-create or replace view account_balance as
+create view account_balance as
 (
 select t.account_id,
-       coalesce(t_amount_topup, 0)    amount_topup,
-       coalesce(w_amount_withdraw, 0) amount_withdraw
+       coalesce(t_amount_topup, 0) amount_topup,
+       coalesce(w_amount_withdraw, 0) amount_withdraw,
+       (coalesce(t_amount_topup, 0) - coalesce(w_amount_withdraw, 0)) balance
+
 from (select account_id, SUM(amount) t_amount_topup
       from account_operations
       where type = 'TOPUP'
