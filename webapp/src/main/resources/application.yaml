@@ -1,3 +1,4 @@
+
 server:
   port: 6060
   servlet:
@@ -21,10 +22,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
 springdoc:
   default-produces-media-type: application/json
   api-docs:
     version: openapi_3_1
   swagger-ui:
     path: /index.html
+logging:
+  level:
+    root: info
+    ru:
+      effectivemobile: debug

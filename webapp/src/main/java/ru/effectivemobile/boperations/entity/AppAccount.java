@@ -55,6 +55,13 @@ public class AppAccount implements Account {
                 .orElse(BigDecimal.ZERO);
     }
 
+    @Override
+    public BigDecimal getFirstTopupAmount() {
+        return Optional.ofNullable(firstTopup)
+                .map(AppAccountFirstTopup::getAmount)
+                .orElse(BigDecimal.ZERO);
+    }
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
