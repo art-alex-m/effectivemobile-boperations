@@ -8,6 +8,6 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class AppDomainUser implements DomainUser {
+public class AppUserDto implements DomainUser {
     private final UUID id;
 }

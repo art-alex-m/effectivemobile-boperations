@@ -1,6 +1,5 @@
 package ru.effectivemobile.boperations.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Schema(name = "AppError")
-public class AppError {
+public class AppErrorDto {
     private String className;
 
     private String field;

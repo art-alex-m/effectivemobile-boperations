@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.effectivemobile.boperations.boundary.request.AppCreateUserRequest;
 import ru.effectivemobile.boperations.domain.core.boundary.CreateUserInteractor;
 import ru.effectivemobile.boperations.domain.core.model.DomainUser;
+import ru.effectivemobile.boperations.dto.AppUserDto;
 
 @RestController
 @AllArgsConstructor
@@ -22,6 +23,7 @@ public class AppUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DomainUser createUser(@Validated @RequestBody AppCreateUserRequest request) {
-        return interactor.create(request).getUser();
+        DomainUser user = interactor.create(request).getUser();
+        return new AppUserDto(user.getId());
     }
 }

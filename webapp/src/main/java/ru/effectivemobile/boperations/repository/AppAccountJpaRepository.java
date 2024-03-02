@@ -13,6 +13,6 @@ import java.util.stream.Stream;
 public interface AppAccountJpaRepository extends CrudRepository<AppAccount, UUID> {
     Optional<AppAccount> findFirstByUser_Id(UUID userId);
 
-    @Query("select ac from AppAccount ac where ac.accountBalance.balance > 0 and ac.accountBalance.balance / ac.firstTopup.amount <= :maxIncrease")
+    @Query("select ac from AppAccount ac where ac.accountBalance.balance > 0 and ac.accountBalance.balance / ac.firstTopup.amount < :maxIncrease")
     Stream<AppAccount> findAllSuitableForInterest(double maxIncrease);
 }
