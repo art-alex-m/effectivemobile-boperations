@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
+@Schema(name = "AppProfilePropertyDto")
 public class AppProfilePropertyDto<T> {
 
     @Schema(description = "Profile property type", examples = {"STRING", "INSTANT"})
@@ -13,6 +14,7 @@ public class AppProfilePropertyDto<T> {
 
     private UUID id;
 
+    @Schema(type = "string")
     private T value;
 
     public AppProfilePropertyDto(UUID id, T value) {

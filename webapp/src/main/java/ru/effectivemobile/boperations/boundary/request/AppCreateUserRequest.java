@@ -1,5 +1,6 @@
 package ru.effectivemobile.boperations.boundary.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,5 +45,6 @@ public class AppCreateUserRequest implements CreateUserRequest {
     private Instant birthday;
 
     @Positive
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private double startBalance;
 }

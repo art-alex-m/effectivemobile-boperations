@@ -12,6 +12,8 @@ import ru.effectivemobile.boperations.domain.core.boundary.request.UserWithdrawO
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,5 +27,6 @@ public class AppUserWithdrawOperationRequest implements UserWithdrawOperationReq
     private UUID userIdTo;
 
     @Positive
+    @Schema(requiredMode = RequiredMode.REQUIRED)
     private BigDecimal amount;
 }

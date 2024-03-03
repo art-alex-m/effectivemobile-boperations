@@ -1,5 +1,7 @@
 package ru.effectivemobile.boperations.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import ru.effectivemobile.boperations.domain.core.boundary.CreateUserInteractor;
 import ru.effectivemobile.boperations.domain.core.model.DomainUser;
 import ru.effectivemobile.boperations.dto.AppUserDto;
 
+@Tag(name = "Api")
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,9 +24,10 @@ public class AppUserController {
 
     private final CreateUserInteractor interactor;
 
+    @Operation(summary = "Create new user")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DomainUser createUser(@Validated @RequestBody AppCreateUserRequest request) {
+    public AppUserDto createUser(@Validated @RequestBody AppCreateUserRequest request) {
         DomainUser user = interactor.create(request).getUser();
         return new AppUserDto(user.getId());
     }

@@ -21,7 +21,8 @@ public class AppBaseConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
+        configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class)
+                .and(HandlerTypePredicate.forBasePackage("ru.effectivemobile.boperations")));
     }
 
     @Bean

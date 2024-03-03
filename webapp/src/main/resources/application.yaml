@@ -36,4 +36,4 @@ logging:
       effectivemobile: debug
     org:
       springframework:
-        security: debug
+        security: warn
