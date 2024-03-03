@@ -3,6 +3,7 @@ package ru.effectivemobile.boperations.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ import ru.effectivemobile.boperations.mapper.DomainProfileToDtoMapper;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/profiles")
+@RequestMapping(value = "/profiles", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AppProfileController {
 
     private final AppProfileSearchInteractor interactor;

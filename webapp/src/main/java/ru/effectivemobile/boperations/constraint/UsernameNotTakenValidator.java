@@ -2,18 +2,25 @@ package ru.effectivemobile.boperations.constraint;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.effectivemobile.boperations.repository.AppUserJpaRepository;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class UsernameNotTakenValidator implements ConstraintValidator<UsernameNotTaken, String> {
 
     private final AppUserJpaRepository userJpaRepository;
 
+    private boolean not = false;
+
+    @Override
+    public void initialize(UsernameNotTaken constraintAnnotation) {
+        this.not = constraintAnnotation.not();
+    }
+
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return !userJpaRepository.existsByUsername(username);
+        return userJpaRepository.existsByUsername(username) == not;
     }
 }

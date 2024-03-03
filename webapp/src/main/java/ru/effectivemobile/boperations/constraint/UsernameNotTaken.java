@@ -18,6 +18,8 @@ import java.lang.annotation.Target;
 public @interface UsernameNotTaken {
     String message() default "Username is already taken";
 
+    boolean not() default false;
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
