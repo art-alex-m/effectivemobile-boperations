@@ -34,3 +34,6 @@ logging:
     root: info
     ru:
       effectivemobile: debug
+    org:
+      springframework:
+        security: debug

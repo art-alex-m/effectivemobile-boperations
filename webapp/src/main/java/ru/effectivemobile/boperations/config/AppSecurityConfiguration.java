@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,6 +28,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 @EnableAutoConfiguration(exclude = UserDetailsServiceAutoConfiguration.class)
+@EnableMethodSecurity
 public class AppSecurityConfiguration {
     @Bean
     @Order(100)
@@ -45,9 +47,9 @@ public class AppSecurityConfiguration {
                 .addFilter(authTokenAuthenticationFilter)
                 .authenticationManager(authenticationManager)
                 .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers(antMatcher("/api/login/**"),
-                                antMatcher(HttpMethod.POST, "/api/users")).permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(antMatcher("/api/login"),
+                                antMatcher(HttpMethod.POST, "/api/users")).permitAll())
+                .authorizeHttpRequests(customizer -> customizer.anyRequest().authenticated())
                 .build();
     }
 
