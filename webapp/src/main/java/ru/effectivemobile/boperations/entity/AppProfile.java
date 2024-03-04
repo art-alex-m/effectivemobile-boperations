@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -48,10 +49,10 @@ public class AppProfile implements DomainProfile {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "profile", orphanRemoval = true)
     private AppProfileBirthday birthday;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<AppProfileEmail> emails;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<AppProfilePhone> phones;
 
     public AppProfile(UUID id) {

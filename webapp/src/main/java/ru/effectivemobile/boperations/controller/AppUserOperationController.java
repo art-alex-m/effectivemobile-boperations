@@ -29,8 +29,7 @@ import ru.effectivemobile.boperations.service.AppUserDetails;
 @SecurityRequirement(name = "JwtToken")
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/users/{userId}/accounts/1/operations",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/users/{userId}/accounts/1/operations", produces = MediaType.APPLICATION_JSON_VALUE)
 @UserPermission
 public class AppUserOperationController {
 

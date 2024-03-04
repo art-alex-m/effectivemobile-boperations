@@ -20,6 +20,7 @@ spring:
       maximum-pool-size: 8
       minimum-idle: 2
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     show-sql: false
@@ -36,4 +37,4 @@ logging:
       effectivemobile: debug
     org:
       springframework:
-        security: warn
+        security: info

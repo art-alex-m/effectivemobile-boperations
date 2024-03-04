@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.effectivemobile.boperations.constraint.BusinessLogicCheckGroup;
 import ru.effectivemobile.boperations.constraint.EmailNotTaken;
+import ru.effectivemobile.boperations.constraint.Phone;
 import ru.effectivemobile.boperations.constraint.PhoneNotTaken;
 import ru.effectivemobile.boperations.constraint.UsernameNotTaken;
 import ru.effectivemobile.boperations.domain.core.boundary.request.CreateUserRequest;
@@ -33,12 +34,14 @@ public class AppCreateUserRequest implements CreateUserRequest {
     private String name;
 
     @NotEmpty
+    @Phone
     @PhoneNotTaken(groups = BusinessLogicCheckGroup.class)
     private String phone;
 
     @NotEmpty
     @Email
     @EmailNotTaken(groups = BusinessLogicCheckGroup.class)
+    @Schema(format = "email")
     private String email;
 
     @NotNull

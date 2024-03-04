@@ -15,7 +15,7 @@ import ru.effectivemobile.boperations.domain.core.boundary.response.LoginRespons
 import ru.effectivemobile.boperations.dto.AppLoginDto;
 import ru.effectivemobile.boperations.service.AppAuthTokenManager;
 
-@Tag(name = "Api")
+@Tag(name = "User")
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)

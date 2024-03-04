@@ -2,13 +2,15 @@ package ru.effectivemobile.boperations.boundary.request;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.effectivemobile.boperations.constraint.Phone;
 import ru.effectivemobile.boperations.constraint.SortingFields;
 import ru.effectivemobile.boperations.domain.core.boundary.request.ProfileSearchRequest;
 
@@ -28,9 +30,11 @@ public class AppProfileSearchRequest implements ProfileSearchRequest {
 
     private String name;
 
+    @Phone
     private String phone;
 
     @Schema(format = "email")
+    @Email
     private String email;
 
     private Instant birthday;
@@ -41,10 +45,10 @@ public class AppProfileSearchRequest implements ProfileSearchRequest {
     private List<String> sort;
 
     @Positive
-    @Schema(defaultValue = "50", minimum = "0")
+    @Schema(defaultValue = "50", minimum = "1")
     private int limit = DEFAULT_LIMIT;
 
-    @Min(0)
+    @PositiveOrZero
     @Max(500)
     @Schema(minimum = "0", maximum = "500", defaultValue = "0")
     private int page = DEFAULT_PAGE;
@@ -52,7 +56,7 @@ public class AppProfileSearchRequest implements ProfileSearchRequest {
     @Schema(hidden = true)
     public Set<AppSorting> getSorting() {
         return Optional.ofNullable(sort)
-                .filter(map -> !map.isEmpty())
+                .filter(list -> !list.isEmpty())
                 .map(Collection::stream)
                 .map(stream -> stream.map(AppSorting::from))
                 .map(Stream::toList)
