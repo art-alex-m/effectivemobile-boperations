@@ -25,7 +25,7 @@ import ru.effectivemobile.boperations.domain.core.boundary.UserWithdrawOperation
 import ru.effectivemobile.boperations.domain.core.boundary.response.UserWithdrawOperationResponse;
 import ru.effectivemobile.boperations.service.AppUserDetails;
 
-@Tag(name = "Api")
+@Tag(name = "Account")
 @SecurityRequirement(name = "JwtToken")
 @RestController
 @AllArgsConstructor

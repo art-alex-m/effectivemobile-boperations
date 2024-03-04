@@ -3,6 +3,7 @@ package ru.effectivemobile.boperations.boundary.request;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +44,7 @@ public class AppProfileSearchRequest implements ProfileSearchRequest {
     @Schema(defaultValue = "50", minimum = "0")
     private int limit = DEFAULT_LIMIT;
 
-    @Positive
+    @Min(0)
     @Max(500)
     @Schema(minimum = "0", maximum = "500", defaultValue = "0")
     private int page = DEFAULT_PAGE;

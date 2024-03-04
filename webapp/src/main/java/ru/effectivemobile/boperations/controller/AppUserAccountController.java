@@ -19,7 +19,7 @@ import ru.effectivemobile.boperations.service.AppUserDetails;
 
 import java.util.List;
 
-@Tag(name = "Api")
+@Tag(name = "Account")
 @SecurityRequirement(name = "JwtToken")
 @RestController
 @AllArgsConstructor

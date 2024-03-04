@@ -16,7 +16,7 @@ import ru.effectivemobile.boperations.domain.core.boundary.CreateUserInteractor;
 import ru.effectivemobile.boperations.domain.core.model.DomainUser;
 import ru.effectivemobile.boperations.dto.AppUserDto;
 
-@Tag(name = "Api")
+@Tag(name = "User")
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)

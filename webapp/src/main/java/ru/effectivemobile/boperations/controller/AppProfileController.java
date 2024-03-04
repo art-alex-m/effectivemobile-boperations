@@ -25,7 +25,7 @@ import ru.effectivemobile.boperations.mapper.DomainProfileToDtoMapper;
 
 import java.util.List;
 
-@Tag(name = "Api")
+@Tag(name = "Profile")
 @SecurityRequirement(name = "JwtToken")
 @AllArgsConstructor
 @RestController
