@@ -1,5 +1,6 @@
 package ru.effectivemobile.boperations.domain.core.boundary.request;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 public interface CreateUserRequest {
@@ -15,5 +16,5 @@ public interface CreateUserRequest {
 
     Instant getBirthday();
 
-    double getStartBalance();
+    BigDecimal getStartBalance();
 }

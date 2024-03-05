@@ -1,6 +1,7 @@
 package ru.effectivemobile.boperations.boundary.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,6 +17,7 @@ import ru.effectivemobile.boperations.constraint.PhoneNotTaken;
 import ru.effectivemobile.boperations.constraint.UsernameNotTaken;
 import ru.effectivemobile.boperations.domain.core.boundary.request.CreateUserRequest;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @NoArgsConstructor
@@ -48,6 +50,6 @@ public class AppCreateUserRequest implements CreateUserRequest {
     private Instant birthday;
 
     @Positive
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private double startBalance;
+    @Schema(requiredMode = RequiredMode.REQUIRED)
+    private BigDecimal startBalance;
 }

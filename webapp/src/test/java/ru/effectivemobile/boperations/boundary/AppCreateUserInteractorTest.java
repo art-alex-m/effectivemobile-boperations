@@ -1,6 +1,7 @@
 package ru.effectivemobile.boperations.boundary;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,7 @@ import ru.effectivemobile.boperations.entity.AppProfile;
 import ru.effectivemobile.boperations.entity.AppUser;
 import ru.effectivemobile.boperations.repository.AppAccountJpaRepository;
 import ru.effectivemobile.boperations.repository.AppAccountOperationJpaRepository;
-import ru.effectivemobile.boperations.repository.AppProfileEmailJpaRepository;
 import ru.effectivemobile.boperations.repository.AppProfileJpaRepository;
-import ru.effectivemobile.boperations.repository.AppProfilePhoneJpaRepository;
 import ru.effectivemobile.boperations.repository.AppUserJpaRepository;
 import ru.effectivemobile.boperations.support.DataJpaTestDockerized;
 
@@ -37,18 +36,12 @@ class AppCreateUserInteractorTest {
     AppProfileJpaRepository profileDbRepository;
 
     @Autowired
-    AppProfileEmailJpaRepository emailJpaRepository;
-
-    @Autowired
-    AppProfilePhoneJpaRepository phoneJpaRepository;
-
-    @Autowired
     AppAccountJpaRepository bankAccountDbRepository;
 
     @Autowired
     AppAccountOperationJpaRepository operationDbRepository;
 
-    @Autowired
+    @PersistenceContext
     EntityManager entityManager;
 
     AppCreateUserInteractor sut;
@@ -57,10 +50,8 @@ class AppCreateUserInteractorTest {
     void setUp() {
         sut = AppCreateUserInteractor.builder()
                 .bankAccountDbRepository(bankAccountDbRepository)
-                .emailJpaRepository(emailJpaRepository)
                 .operationDbRepository(operationDbRepository)
                 .passwordEncoder(passwordEncoder)
-                .phoneJpaRepository(phoneJpaRepository)
                 .profileDbRepository(profileDbRepository)
                 .userDbRepository(userDbRepository)
                 .build();
@@ -69,7 +60,7 @@ class AppCreateUserInteractorTest {
     @Test
     void givenGoodRequest_whenCreate_thenSuccessCreatedUserAndProfileAndAccount() {
         AppCreateUserRequest request = new AppCreateUserRequest("testuser", "testpassword", "Test User", "79999999999",
-                "test@example.com", Instant.now(), 10.10);
+                "test@example.com", Instant.now(), BigDecimal.valueOf(10.10));
 
         CreateUserResponse result = sut.create(request);
 
@@ -98,11 +89,9 @@ class AppCreateUserInteractorTest {
         assertThat(appAccount).isNotNull();
         assertThat(appAccount.getAccountBalance()).isNotNull();
         assertThat(appAccount.getBalance())
-                .usingComparator(BigDecimal::compareTo)
-                .isEqualTo(BigDecimal.valueOf(request.getStartBalance()));
+                .usingComparator(BigDecimal::compareTo).isEqualTo(request.getStartBalance());
         assertThat(appAccount.getFirstTopup()).isNotNull();
         assertThat(appAccount.getFirstTopup().getAmount())
-                .usingComparator(BigDecimal::compareTo)
-                .isEqualTo(BigDecimal.valueOf(request.getStartBalance()));
+                .usingComparator(BigDecimal::compareTo).isEqualTo(request.getStartBalance());
     }
 }

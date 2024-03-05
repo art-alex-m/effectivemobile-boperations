@@ -1,0 +1,118 @@
+### Create User
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/users
+Content-Type: application/json
+
+{
+  "username": "testuser4",
+  "password": "testpassword",
+  "name": "Test User4",
+  "phone": "7999999991",
+  "email": "test4@example.com",
+  "birthday": "2024-03-03T00:00:00.000Z",
+  "startBalance": 5.25
+}
+
+
+### Login
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/login
+Content-Type: application/json
+
+{
+  "username": "testuser4",
+  "password": "testpassword"
+}
+
+> {%
+    client.global.set("token", response.body.authorizationToken);
+    client.global.set("user_id", response.body.userId)
+%}
+
+### Add new phone
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/phones
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "value": "79172268250"
+}
+
+> {%
+    client.global.set("pproperty_id", response.body.id)
+%}
+
+### Update phone
+# @no-log
+PATCH http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/phones/{{ pproperty_id }}
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "value": "79046630770"
+}
+
+### Delete phone
+# @no-log
+DELETE http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/phones/{{ pproperty_id }}
+Authorization: Bearer {{ token }}
+
+### Add new email
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/emails
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "value": "user11@example.com"
+}
+
+> {%
+    client.global.set("eproperty_id", response.body.id)
+%}
+
+### Update email
+# @no-log
+PATCH http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/emails/{{ eproperty_id }}
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "value": "user22@example.com"
+}
+
+### Delete email
+# @no-log
+DELETE http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/emails/{{ eproperty_id }}
+Authorization: Bearer {{ token }}
+
+### Withdraw
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts/1/operations
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "userIdTo": "b2e0413e-45e3-40de-920c-ce1c2bc31d9f",
+  "amount": 2.5
+}
+
+### Search profiles
+# @no-log
+# @no-cookie-jar
+GET http://localhost:6060/boperations-webapp/api/profiles?sort=-name_value
+Authorization: Bearer {{ token }}
+
+### List user accounts
+# @no-log
+# @no-cookie-jar
+GET http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts
+Authorization: Bearer {{ token }}
+
+
+### List not permitted accounts
+# @no-log
+# @no-cookie-jar
+GET http://localhost:6060/boperations-webapp/api/users/35795899-aaa6-41eb-8dd4-e08432393940/accounts
+Authorization: Bearer {{ token }}
