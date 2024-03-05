@@ -3,6 +3,8 @@ package ru.effectivemobile.boperations.boundary;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.effectivemobile.boperations.boundary.response.AppUserWithdrawOperationResponse;
 import ru.effectivemobile.boperations.domain.core.boundary.UserWithdrawOperationInteractor;
@@ -27,10 +29,9 @@ public class AppUserWithdrawOperationInteractor implements UserWithdrawOperation
 
     private final EntityManager entityManager;
 
-    @Transactional
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
     public UserWithdrawOperationResponse withdraw(UserWithdrawOperationRequest request) {
-
         AppAccount accountFrom = accountJpaRepository.findFirstByUser_Id(request.getUserIdFrom())
                 .orElseThrow(() -> new BoperationsDomainException("Invalid account from"));
 
@@ -49,7 +50,9 @@ public class AppUserWithdrawOperationInteractor implements UserWithdrawOperation
                 AccountOperationType.TOPUP);
         operationJpaRepository.save(topup);
 
-        List.of(accountFrom, accountTo, withdraw, topup).forEach(entityManager::detach);
+        entityManager.flush();
+        List.of(accountFrom.getAccountBalance(), accountTo.getAccountBalance(), accountFrom, accountTo, withdraw, topup)
+                .forEach(entityManager::detach);
 
         return new AppUserWithdrawOperationResponse(withdraw.getId());
     }
