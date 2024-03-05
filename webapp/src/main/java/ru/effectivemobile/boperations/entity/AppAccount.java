@@ -50,11 +50,9 @@ public class AppAccount implements Account {
 
     @Override
     public BigDecimal getBalance() {
-        BigDecimal balance = Optional.ofNullable(accountBalance)
+        return Optional.ofNullable(accountBalance)
                 .map(AppAccountBalance::getBalance)
                 .orElse(BigDecimal.ZERO);
-
-        return balance;
     }
 
     @Override

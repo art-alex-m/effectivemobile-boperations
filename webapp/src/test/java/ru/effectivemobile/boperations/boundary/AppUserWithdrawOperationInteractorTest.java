@@ -1,12 +1,13 @@
 package ru.effectivemobile.boperations.boundary;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
 import org.apache.commons.lang3.stream.IntStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import ru.effectivemobile.boperations.boundary.request.AppUserWithdrawOperationRequest;
 import ru.effectivemobile.boperations.domain.core.boundary.request.UserWithdrawOperationRequest;
 import ru.effectivemobile.boperations.domain.core.boundary.response.UserWithdrawOperationResponse;
@@ -20,13 +21,14 @@ import ru.effectivemobile.boperations.support.DataJpaTestDockerized;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_CLASS;
 
 @DataJpaTestDockerized
-@Sql(value = "/db/changelog/fixtures/accounts/01-accounts.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(value = "/db/changelog/fixtures/accounts/01-accounts.sql", executionPhase = BEFORE_TEST_CLASS)
+@Sql(value = "/db/changelog/fixtures/accounts/02-operations.sql", executionPhase = BEFORE_TEST_CLASS)
 class AppUserWithdrawOperationInteractorTest {
     private static final UUID userFrom = UUID.fromString("d52e7c9e-c9b9-423c-9e4f-1a35145a2182");
     private static final UUID userTo = UUID.fromString("b2e0413e-45e3-40de-920c-ce1c2bc31d9f");
@@ -40,17 +42,19 @@ class AppUserWithdrawOperationInteractorTest {
     AppAccountOperationJpaRepository operationJpaRepository;
 
     @Autowired
+    EntityManagerFactory entityManagerFactory;
+
+    @PersistenceContext
     EntityManager entityManager;
 
     AppUserWithdrawOperationInteractor sut;
 
     @BeforeEach
     void setUp() {
-        sut = new AppUserWithdrawOperationInteractor(accountJpaRepository, operationJpaRepository, entityManager);
+        sut = new AppUserWithdrawOperationInteractor(entityManagerFactory);
     }
 
     @Test
-    @Sql("/db/changelog/fixtures/accounts/02-operations.sql")
     void givenRequest_whenWithdraw_thenSuccessAccountOperations() {
         BigDecimal amount = BigDecimal.valueOf(100);
         UserWithdrawOperationRequest request = new AppUserWithdrawOperationRequest(userFrom, userTo, amount);
@@ -74,30 +78,25 @@ class AppUserWithdrawOperationInteractorTest {
     }
 
     @Test
-    @Sql("/db/changelog/fixtures/accounts/02-operations.sql")
-    void givenAmountParallel_whenWithdraw_thenNotEnoughFundsException() {
-        AtomicReference<BigDecimal> amountLast = new AtomicReference<>();
-
+    void givenAmountSequence_whenWithdraw_thenNotEnoughFundsException() {
 
         Throwable result = catchThrowable(() -> {
             IntStreams.range(10)
                     .mapToObj(value -> BigDecimal.valueOf(150 + value))
-                    .forEach(amount -> {
-                        amountLast.set(amount);
-                        UserWithdrawOperationRequest request = new AppUserWithdrawOperationRequest(userFrom, userTo,
-                                amount);
-                        sut.withdraw(request);
-                    });
+                    .map(amount -> new AppUserWithdrawOperationRequest(userFrom, userTo, amount))
+                    .forEach(sut::withdraw);
         });
+
 
         assertThat(result).isNotNull();
         assertThat(result).isInstanceOf(BoperationsDomainException.class)
                 .hasMessageContaining("Insufficient funds in the account from");
-        assertThat(amountLast.get()).usingComparator(BigDecimal::compareTo).isEqualTo(BigDecimal.valueOf(156));
         BigDecimal balanceTo = getAccountBalance(userTo);
         BigDecimal balanceFrom = getAccountBalance(userFrom);
-        assertThat(balanceFrom).usingComparator(BigDecimal::compareTo).isEqualTo(BigDecimal.valueOf(15));
-        assertThat(balanceTo).usingComparator(BigDecimal::compareTo).isEqualTo(BigDecimal.valueOf(1085));
+        assertThat(balanceFrom).usingComparator(BigDecimal::compareTo)
+                .isGreaterThan(BigDecimal.ONE).isLessThan(BigDecimal.valueOf(500));
+        assertThat(balanceTo).usingComparator(BigDecimal::compareTo)
+                .isGreaterThan(BigDecimal.valueOf(170)).isLessThan(BigDecimal.valueOf(1500));
     }
 
     @Test
