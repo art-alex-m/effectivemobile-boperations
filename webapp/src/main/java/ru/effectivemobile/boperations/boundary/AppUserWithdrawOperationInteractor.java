@@ -51,28 +51,32 @@ public class AppUserWithdrawOperationInteractor implements UserWithdrawOperation
 
         try (EntityManager entityManager = emFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
+            try {
+                AppAccount accountFrom = getAccount(entityManager, request.getUserIdFrom())
+                        .orElseThrow(() -> new BoperationsDomainException("Invalid account from"));
 
-            AppAccount accountFrom = getAccount(entityManager, request.getUserIdFrom())
-                    .orElseThrow(() -> new BoperationsDomainException("Invalid account from"));
+                if (accountFrom.getBalance().compareTo(request.getAmount()) < 0) {
+                    throw new BoperationsDomainException("Insufficient funds in the account from");
+                }
 
-            if (accountFrom.getBalance().compareTo(request.getAmount()) < 0) {
-                throw new BoperationsDomainException("Insufficient funds in the account from");
+                AppAccount accountTo = getAccount(entityManager, request.getUserIdTo())
+                        .orElseThrow(() -> new BoperationsDomainException("Invalid account to"));
+
+                AppAccountOperation withdraw = new AppAccountOperation(accountFrom, request.getAmount(),
+                        AccountOperationType.WITHDRAW);
+                entityManager.persist(withdraw);
+
+                AppAccountOperation topup = new AppAccountOperation(withdraw.getId(), accountTo, request.getAmount(),
+                        AccountOperationType.TOPUP);
+                entityManager.persist(topup);
+
+                entityManager.getTransaction().commit();
+
+                return new AppUserWithdrawOperationResponse(withdraw.getId());
+            } catch (Exception ex) {
+                entityManager.getTransaction().rollback();
+                throw ex;
             }
-
-            AppAccount accountTo = getAccount(entityManager, request.getUserIdTo())
-                    .orElseThrow(() -> new BoperationsDomainException("Invalid account to"));
-
-            AppAccountOperation withdraw = new AppAccountOperation(accountFrom, request.getAmount(),
-                    AccountOperationType.WITHDRAW);
-            entityManager.persist(withdraw);
-
-            AppAccountOperation topup = new AppAccountOperation(withdraw.getId(), accountTo, request.getAmount(),
-                    AccountOperationType.TOPUP);
-            entityManager.persist(topup);
-
-            entityManager.getTransaction().commit();
-
-            return new AppUserWithdrawOperationResponse(withdraw.getId());
         }
     }
 

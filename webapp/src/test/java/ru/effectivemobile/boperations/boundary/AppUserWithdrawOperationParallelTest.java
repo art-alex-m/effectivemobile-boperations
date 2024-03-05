@@ -55,7 +55,7 @@ public class AppUserWithdrawOperationParallelTest {
 
     @Test
     void givenAmountParallel_whenWithdraw_thenNotEnoughFundsException() throws Exception {
-        List<ParallelWithdraw> tasks = IntStreams.range(10)
+        List<ParallelWithdraw> tasks = IntStreams.range(32)
                 .mapToObj(value -> BigDecimal.valueOf(150 + value))
                 .map(amount -> new AppUserWithdrawOperationRequest(userFrom, userTo, amount))
                 .map(request -> new ParallelWithdraw(sut, request))
@@ -65,6 +65,7 @@ public class AppUserWithdrawOperationParallelTest {
         List<Future<UserWithdrawOperationResponse>> result = taskExecutor.getThreadPoolExecutor().invokeAll(tasks);
 
 
+        while (taskExecutor.getActiveCount() > 0) ;
         BigDecimal balanceTo = getAccountBalance(userTo);
         BigDecimal balanceFrom = getAccountBalance(userFrom);
         assertThat(balanceFrom).usingComparator(BigDecimal::compareTo)
@@ -73,9 +74,9 @@ public class AppUserWithdrawOperationParallelTest {
                 .isLessThan(BigDecimal.valueOf(1100)).isGreaterThan(BigDecimal.valueOf(500));
         result.forEach(future -> {
             try {
-                System.out.printf("Thread process operation #%s%n", future.get().getOperationId());
+                System.out.printf("Withdraw: Thread process operation #%s%n", future.get().getOperationId());
             } catch (InterruptedException | ExecutionException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Withdraw: " + e.getMessage());
             }
         });
     }
@@ -93,7 +94,7 @@ public class AppUserWithdrawOperationParallelTest {
 
         @Override
         public UserWithdrawOperationResponse call() throws Exception {
-            System.out.printf("Thread #%d amount %f%n", Thread.currentThread().getId(), request.getAmount());
+            System.out.printf("Withdraw: Thread #%d amount %f%n", Thread.currentThread().getId(), request.getAmount());
             return interactor.withdraw(request);
         }
     }
