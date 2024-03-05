@@ -1,5 +1,6 @@
 package ru.effectivemobile.boperations.domain.core.model;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -10,7 +11,7 @@ public interface AccountOperation {
 
     Account getAccount();
 
-    double getAmount();
+    BigDecimal getAmount();
 
     AccountOperationType getType();
 }

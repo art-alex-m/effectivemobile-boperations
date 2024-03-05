@@ -7,4 +7,4 @@ databaseChangeLog:
       context: test
       errorIfMissingOrEmpty: false
       relativeToChangelogFile: true
-      path: fixtures/
+      path: fixtures/always

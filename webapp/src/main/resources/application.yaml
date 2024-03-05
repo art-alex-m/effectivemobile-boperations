@@ -1,3 +1,4 @@
+
 server:
   port: 6060
   servlet:
@@ -11,18 +12,29 @@ spring:
   main:
     banner-mode: off
   datasource:
-    url: jdbc:postgresql://localhost:15444/boperations?currentSchema=boperations
+    url: jdbc:postgresql://localhost:15444/boperations
     username: boperations
     password: pwd123456!
     hikari:
+      schema: boperations
       maximum-pool-size: 8
       minimum-idle: 2
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
+    show-sql: false
 springdoc:
   default-produces-media-type: application/json
   api-docs:
     version: openapi_3_1
   swagger-ui:
     path: /index.html
+logging:
+  level:
+    root: info
+    ru:
+      effectivemobile: debug
+    org:
+      springframework:
+        security: info
