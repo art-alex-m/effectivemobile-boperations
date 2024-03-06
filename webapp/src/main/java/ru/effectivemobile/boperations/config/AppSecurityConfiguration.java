@@ -3,6 +3,8 @@ package ru.effectivemobile.boperations.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.compression.GzipCompressionAlgorithm;
 import io.jsonwebtoken.io.CompressionAlgorithm;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -20,19 +22,32 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import ru.effectivemobile.boperations.service.AppAuthHeaderAuthorizationProvider;
+import ru.effectivemobile.boperations.service.SecurityKeyService;
 
+import java.io.File;
 import java.security.KeyPair;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableAutoConfiguration(exclude = UserDetailsServiceAutoConfiguration.class)
 @EnableMethodSecurity
 public class AppSecurityConfiguration {
+
+    @Value("${effectivemobile.security.jwt.public-key}")
+    private String publicJwtKey;
+
+    @Value("${effectivemobile.security.jwt.private-key}")
+    private String privateJwtKey;
+
+    @Value("${effectivemobile.security.jwt.algorithm}")
+    private String algorithm;
+
     @Bean
     @Order(100)
-    public SecurityFilterChain baseSecurityFilter(HttpSecurity httpSecurity,
+    public SecurityFilterChain apiSecurityFilter(HttpSecurity httpSecurity,
             RequestHeaderAuthenticationFilter authTokenAuthenticationFilter,
             AuthenticationManager authenticationManager) throws Exception {
 
@@ -60,8 +75,24 @@ public class AppSecurityConfiguration {
     }
 
     @Bean
-    public KeyPair secretJwtKey() {
-        return Jwts.SIG.ES256.keyPair().build();
+    public KeyPair secretJwtKey(SecurityKeyService keyService) {
+        File privateFile = new File(privateJwtKey);
+        File publicFile = new File(publicJwtKey);
+
+        if (privateFile.canRead() && publicFile.canRead()) {
+            log.info("Loading existing key pair with algorithm {}: {}, {}", algorithm, privateJwtKey, publicJwtKey);
+            return keyService.loadFromFile(algorithm, privateFile, publicFile);
+        }
+
+        log.info("Create new key pair with EC (ES256) algorithm");
+        KeyPair keyPair = Jwts.SIG.ES256.keyPair().build();
+        if (privateFile.canWrite() && publicFile.canWrite()) {
+            keyService.saveKeyPair(keyPair, new File(privateJwtKey), new File(publicJwtKey));
+        } else {
+            log.warn("Can not save keyPair to {}. New pair will be generated next time", privateJwtKey);
+        }
+
+        return keyPair;
     }
 
     @Bean
