@@ -87,27 +87,10 @@ Authorization: Bearer {{ token }}
 DELETE http://localhost:6060/boperations-webapp/api/profiles/{{user_id}}/emails/{{ eproperty_id }}
 Authorization: Bearer {{ token }}
 
-### Withdraw
-# @no-log
-POST http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts/1/operations
-Content-Type: application/json
-Authorization: Bearer {{ token }}
-
-{
-  "userIdTo": "b2e0413e-45e3-40de-920c-ce1c2bc31d9f",
-  "amount": 2.5
-}
-
 ### Search profiles
 # @no-log
 # @no-cookie-jar
 GET http://localhost:6060/boperations-webapp/api/profiles?sort=-name_value
-Authorization: Bearer {{ token }}
-
-### List user accounts
-# @no-log
-# @no-cookie-jar
-GET http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts
 Authorization: Bearer {{ token }}
 
 
@@ -116,3 +99,22 @@ Authorization: Bearer {{ token }}
 # @no-cookie-jar
 GET http://localhost:6060/boperations-webapp/api/users/35795899-aaa6-41eb-8dd4-e08432393940/accounts
 Authorization: Bearer {{ token }}
+
+
+### List user accounts
+# @no-log
+# @no-cookie-jar
+GET http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts
+Authorization: Bearer {{ token }}
+
+
+### Withdraw
+# @no-log
+POST http://localhost:6060/boperations-webapp/api/users/{{user_id}}/accounts/1/operations
+Content-Type: application/json
+Authorization: Bearer {{ token }}
+
+{
+  "userIdTo": "b2e0413e-45e3-40de-920c-ce1c2bc31d9f",
+  "amount": 1000000
+}

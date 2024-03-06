@@ -7,4 +7,8 @@ public class BoperationsDomainException extends RuntimeException {
     public BoperationsDomainException(String message) {
         super(message);
     }
+
+    public BoperationsDomainException(String message, Throwable ex) {
+        super(message, ex);
+    }
 }

@@ -1,13 +1,13 @@
 package ru.effectivemobile.boperations.boundary;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
 import org.apache.commons.lang3.stream.IntStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.jdbc.Sql;
 import ru.effectivemobile.boperations.boundary.request.AppUserWithdrawOperationRequest;
@@ -30,17 +30,17 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @DataJpaTestDockerized
 @Sql(value = "/db/changelog/fixtures/accounts/01-accounts.sql", executionPhase = BEFORE_TEST_CLASS)
 @Sql(value = "/db/changelog/fixtures/accounts/02-operations.sql", executionPhase = BEFORE_TEST_CLASS)
-public class AppUserWithdrawOperationParallelTest {
+public class AppUserWithdrawSqlOperationParallelTest {
 
     private static final UUID userFrom = UUID.fromString("d52e7c9e-c9b9-423c-9e4f-1a35145a2182");
     private static final UUID userTo = UUID.fromString("b2e0413e-45e3-40de-920c-ce1c2bc31d9f");
     private static final String balanceJpql = "select ac.accountBalance.balance from AppAccount ac where ac.user.id = :userId";
 
     @Autowired
-    EntityManagerFactory entityManagerFactory;
+    ThreadPoolTaskExecutor taskExecutor;
 
     @Autowired
-    ThreadPoolTaskExecutor taskExecutor;
+    JdbcTemplate jdbcTemplate;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -49,7 +49,7 @@ public class AppUserWithdrawOperationParallelTest {
 
     @BeforeEach
     void setUp() {
-        sut = new AppUserWithdrawOperationInteractor(entityManagerFactory);
+        sut = new AppUserWithdrawSqlOperationInteractor(jdbcTemplate);
     }
 
     @Test
