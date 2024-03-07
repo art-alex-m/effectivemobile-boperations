@@ -86,10 +86,12 @@ public class AppSecurityConfiguration {
 
         log.info("Create new key pair with EC (ES256) algorithm");
         KeyPair keyPair = Jwts.SIG.ES256.keyPair().build();
-        if (privateFile.canWrite() && publicFile.canWrite()) {
-            keyService.saveKeyPair(keyPair, new File(privateJwtKey), new File(publicJwtKey));
-        } else {
-            log.warn("Can not save keyPair to {}. New pair will be generated next time", privateJwtKey);
+        try {
+            privateFile.createNewFile();
+            publicFile.createNewFile();
+            keyService.saveKeyPair(keyPair, privateFile, publicFile);
+        } catch (Exception ex) {
+            log.warn("Can not save keyPair to {}. New pair will be generated next time", privateJwtKey, ex);
         }
 
         return keyPair;
