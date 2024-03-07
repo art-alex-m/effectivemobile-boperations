@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Операция с банковским счетом
  */
-public interface AccountOperation {
+public interface AccountOperation extends Timestamps {
     UUID getId();
 
     Account getAccount();
