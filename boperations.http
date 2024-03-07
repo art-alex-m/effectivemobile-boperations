@@ -116,5 +116,5 @@ Authorization: Bearer {{ token }}
 
 {
   "userIdTo": "b2e0413e-45e3-40de-920c-ce1c2bc31d9f",
-  "amount": 1000000
+  "amount": 3.28
 }
