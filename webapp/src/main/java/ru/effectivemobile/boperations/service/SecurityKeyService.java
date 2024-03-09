@@ -1,6 +1,5 @@
 package ru.effectivemobile.boperations.service;
 
-import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -30,10 +29,6 @@ public class SecurityKeyService {
     public static final List<String> HEADERS = List.of("-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----",
             "-----BEGIN PUBLIC KEY-----", "-----END PUBLIC KEY-----");
     public static final String HEADERS_DELIMITER = "\r\n";
-
-    public KeyPair createKeys() {
-        return Jwts.SIG.ES256.keyPair().build();
-    }
 
     public boolean saveKeyPair(KeyPair keyPair, File privateFile, File publicFile) {
         try {
