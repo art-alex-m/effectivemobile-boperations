@@ -14,10 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.util.CollectionUtils;
 import ru.effectivemobile.boperations.domain.core.model.DomainProfile;
 import ru.effectivemobile.boperations.domain.core.model.DomainUser;
+import ru.effectivemobile.boperations.domain.core.model.ProfileProperty;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -80,6 +83,20 @@ public class AppProfile implements DomainProfile {
             phones = new HashSet<>();
         }
         phones.add(new AppProfilePhone(phone, this));
+    }
+
+    public Set<ProfileProperty<String>> getPhones() {
+        if (CollectionUtils.isEmpty(phones)) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(phones);
+    }
+
+    public Set<ProfileProperty<String>> getEmails() {
+        if (CollectionUtils.isEmpty(emails)) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(emails);
     }
 
     @NoArgsConstructor

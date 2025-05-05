@@ -73,11 +73,12 @@ public class AppInterestOnBalanceInteractor implements InterestOnBalanceInteract
     @Scheduled(fixedDelay = 60, initialDelay = 60, timeUnit = TimeUnit.SECONDS)
     public void charge() {
         try (Stream<AppAccount> accounts = accountJpaRepository.findAllSuitableForInterest(MAX_INCREASE, EPSILON)) {
-            accounts.peek(entityManager::detach).forEach(account -> {
+            accounts.forEach(account -> {
                 BigDecimal amount = account.getBalance().multiply(currentRate(account));
                 AppAccountOperation operation = new AppAccountOperation(account, amount, AccountOperationType.TOPUP);
                 operationJpaRepository.save(operation);
                 entityManager.detach(operation);
+                entityManager.detach(account);
             });
         }
     }

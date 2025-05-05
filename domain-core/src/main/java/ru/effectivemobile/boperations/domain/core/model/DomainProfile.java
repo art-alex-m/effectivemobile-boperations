@@ -14,9 +14,9 @@ public interface DomainProfile extends DomainUserable {
 
     ProfileProperty<String> getName();
 
-    Set<? extends ProfileProperty<String>> getPhones();
+    Set<ProfileProperty<String>> getPhones();
 
-    Set<? extends ProfileProperty<String>> getEmails();
+    Set<ProfileProperty<String>> getEmails();
 
     Instant getCreatedAt();
 }

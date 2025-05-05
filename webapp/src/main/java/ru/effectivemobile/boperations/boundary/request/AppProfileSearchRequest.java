@@ -16,7 +16,7 @@ import ru.effectivemobile.boperations.domain.core.boundary.request.ProfileSearch
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -60,7 +60,7 @@ public class AppProfileSearchRequest implements ProfileSearchRequest {
                 .map(Collection::stream)
                 .map(stream -> stream.map(AppSorting::from))
                 .map(Stream::toList)
-                .map(HashSet::new)
-                .orElse(null);
+                .map(Set::copyOf)
+                .orElse(Collections.emptySet());
     }
 }

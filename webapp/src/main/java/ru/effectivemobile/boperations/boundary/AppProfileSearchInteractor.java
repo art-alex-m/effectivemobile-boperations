@@ -49,6 +49,6 @@ public class AppProfileSearchInteractor implements ProfileSearchInteractor {
                 ? profileJpaRepository.findAll(pageable)
                 : profileJpaRepository.findAll(Specification.allOf(specifications), pageable);
 
-        return profiles.map(profile -> (DomainProfile) profile);
+        return profiles.map(DomainProfile.class::cast);
     }
 }
